@@ -234,3 +234,15 @@ https://github.com/mohamedsahjath/Climate-Disaster-Agent-AI.git
 - Support multiple languages including Sinhala and Tamil.
 - Improve retrieval accuracy with larger datasets.
 - Add more Sri Lanka-specific disaster information.
+
+# RAG Pipeline
+
+This module handles the Retrieval-Augmented Generation pipeline.
+
+## Process
+
+1. Load disaster PDF documents
+2. Split documents into chunks
+3. Generate embeddings using HuggingFace Sentence Transformers
+4. Store vectors in ChromaDB
+5. Retrieve relevant context for user queries

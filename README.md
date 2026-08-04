@@ -1,148 +1,234 @@
-\# Climate \& Disaster Awareness Assistant
+# Climate & Disaster Awareness Assistant
 
-
-
-\## Project Description
-
-
+## Project Description
 
 An Agentic AI assistant that provides climate change and disaster awareness information using Retrieval-Augmented Generation (RAG).
 
-
-
 The system helps users understand:
 
-\- Flood safety
+- Flood safety
+- Cyclone preparedness
+- Drought awareness
+- Landslide safety
+- Climate change information
 
-\- Cyclone preparedness
+This project uses Sri Lanka-specific disaster and environmental documents as a knowledge base to provide accurate and context-based answers.
 
-\- Drought awareness
+---
 
-\- Climate change information
-
-
-
-
-
-\## Architecture
-
-
-
+## System Architecture
 User
-
-↓
-
+|
+v
+Streamlit Interface
+|
+v
 Router Agent
-
-↓
-
+|
+v
 Retrieval Agent
-
-↓
-
+|
+v
 ChromaDB Vector Database
-
-↓
-
+|
+v
+Retrieved Context
+|
+v
 LLM Agent (Groq)
-
-↓
-
+|
+v
 Final Answer
 
 
 
+---
+
+## Agent Components
+
+### 1. Router Agent
+
+The Router Agent identifies the category of the user's question.
+
+Examples:
+
+- Flood-related question → Disaster category
+- Climate-related question → Climate category
+- Safety guideline question → Safety category
+
+---
+
+### 2. Retrieval Agent
+
+The Retrieval Agent searches the disaster knowledge base and retrieves relevant information using vector similarity search.
+
+Technologies used:
+
+- ChromaDB
+- HuggingFace Embeddings
+- Sentence Transformers
+
+---
+
+### 3. LLM Agent
+
+The LLM Agent generates the final answer using the retrieved context.
+
+Model:
+
+- Llama 3.3 70B (Groq)
+
+---
+
+# Agent Communication Flow
+User Query
+
+|
+v
+
+Router Agent
+
+|
+| Sends question category
+
+v
+
+Retrieval Agent
+
+|
+| Sends retrieved document context
+
+v
+
+LLM Agent
+
+|
+v
+
+Final Response
 
 
-\## Agents
+The agents communicate by passing structured information between each stage.
+
+---
+
+# RAG Pipeline
+
+The Retrieval-Augmented Generation pipeline contains the following steps:
 
 
+PDF Documents
 
-\### Router Agent
+  |
 
-Classifies user questions into disaster-related categories.
+  v
 
+Document Loader
 
+  |
 
-\### Retrieval Agent
-
-Searches relevant information from the disaster knowledge base using ChromaDB.
-
-
-
-\### LLM Agent
-
-Generates final answers using retrieved context.
-
-
-
-
-
-\## RAG Pipeline
-
-
-
-Documents (PDF)
-
-↓
-
-PDF Loader
-
-↓
+  v
 
 Text Chunking
 
-↓
+  |
+
+  v
 
 Sentence Transformer Embeddings
 
-↓
+  |
 
-ChromaDB
+  v
 
-↓
+ChromaDB Vector Database
+
+  |
+
+  v
 
 Similarity Search
 
+  |
 
+  v
+  LLM Response Generation
 
+  
+---
 
+# Dataset
 
-\## Technologies Used
+The knowledge base contains climate and disaster-related PDF documents.
 
+Document topics include:
 
+- Flood management
+- Cyclone preparedness
+- Drought awareness
+- Climate change impacts
+- Disaster safety guidelines
 
-\- Python
+Sources include:
 
-\- Streamlit
+- Disaster management documents
+- Environmental reports
+- Climate awareness publications
 
-\- LangChain
+---
 
-\- ChromaDB
+# Technologies Used
 
-\- Groq API
+- Python
+- Streamlit
+- LangChain
+- ChromaDB
+- Groq API
+- HuggingFace Embeddings
+- Sentence Transformers
 
-\- HuggingFace Embeddings
+---
 
+# Model Selection Strategy
 
+| Task | Model | Reason |
+|---|---|---|
+| Question Classification | Lightweight LLM model | Low latency and efficient routing |
+| Final Answer Generation | Llama 3.3 70B (Groq) | Better reasoning ability and high-quality responses |
 
+---
 
+# Retrieval Evaluation
 
-\## Live Demo
+| Query | Retrieved Context Quality |
+|---|---|
+| What should people do during floods? | Relevant flood safety information retrieved |
+| How to prepare for cyclones? | Relevant cyclone guidelines retrieved |
+| Causes of drought | Relevant climate information retrieved |
+| Landslide safety steps | Relevant disaster safety information retrieved |
+| Climate change impacts | Relevant environmental information retrieved |
 
+---
 
+# Live Demo
 
-(Add Streamlit Cloud URL here)
+Streamlit Cloud URL:
 
+(Add your Streamlit URL here)
 
+---
 
+# Limitations
 
+- The assistant depends on available documents in the knowledge base.
+- It does not provide real-time emergency alerts.
+- Response quality depends on the quality of retrieved documents.
 
-\## Limitations
+---
 
+# Future Improvements
 
-
-\- Answers depend on available documents.
-
-\- Real-time weather alerts are not included.
-
+- Add real-time weather and disaster alerts.
+- Support multiple languages including Sinhala and Tamil.
+- Improve retrieval accuracy with larger datasets.
+- Add more Sri Lanka-specific disaster information.

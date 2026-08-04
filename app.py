@@ -9,7 +9,7 @@ st.set_page_config(
 )
 
 
-# ================= UI DESIGN =================
+# ================= CSS DESIGN =================
 
 st.markdown("""
 <style>
@@ -18,19 +18,19 @@ st.markdown("""
 
 background: linear-gradient(
 135deg,
-#e0f7ff,
-#caf0f8,
-#ade8f4
+#023e8a,
+#0077b6,
+#90e0ef
 );
 
 }
 
 
-/* Main Hero */
+/* Header */
 
 .hero {
 
-background:white;
+background: rgba(255,255,255,0.95);
 
 padding:35px;
 
@@ -38,7 +38,7 @@ border-radius:25px;
 
 text-align:center;
 
-box-shadow:0px 8px 25px rgba(0,0,0,0.12);
+box-shadow:0px 8px 25px rgba(0,0,0,0.25);
 
 }
 
@@ -62,14 +62,14 @@ font-size:20px;
 
 
 
-/* Disaster Cards */
+/* Cards */
 
 
 .card {
 
 background:white;
 
-padding:25px;
+padding:20px;
 
 border-radius:20px;
 
@@ -77,14 +77,14 @@ text-align:center;
 
 height:150px;
 
-box-shadow:0px 5px 20px rgba(0,0,0,0.12);
+box-shadow:0px 5px 20px rgba(0,0,0,0.25);
 
 }
 
 
 .card h2 {
 
-font-size:35px;
+font-size:40px;
 
 }
 
@@ -97,7 +97,31 @@ color:#0077b6;
 
 
 
+/* Chat box title */
+
+.chat-title {
+
+background:white;
+
+padding:15px;
+
+border-radius:15px;
+
+text-align:center;
+
+color:#0077b6;
+
+font-size:24px;
+
+font-weight:bold;
+
+box-shadow:0px 5px 15px rgba(0,0,0,0.2);
+
+}
+
+
 </style>
+
 """, unsafe_allow_html=True)
 
 
@@ -131,13 +155,13 @@ unsafe_allow_html=True
 
 
 
-# ================= CARDS =================
+# ================= DISASTER CARDS =================
 
 
-col1,col2,col3,col4 = st.columns(4)
+c1,c2,c3,c4 = st.columns(4)
 
 
-with col1:
+with c1:
 
     st.markdown(
     """
@@ -155,7 +179,7 @@ with col1:
     )
 
 
-with col2:
+with c2:
 
     st.markdown(
     """
@@ -173,7 +197,7 @@ with col2:
     )
 
 
-with col3:
+with c3:
 
     st.markdown(
     """
@@ -191,7 +215,7 @@ with col3:
     )
 
 
-with col4:
+with c4:
 
     st.markdown(
     """
@@ -213,7 +237,7 @@ st.write("")
 
 
 
-# ================= AGENTS =================
+# ================= AGENT IMPORT =================
 
 
 sys.path.append("agents")
@@ -225,30 +249,30 @@ from llm_agent import generate_answer
 
 
 
-# ================= CHAT MEMORY =================
+# ================= CHAT SECTION =================
 
 
-if "messages" not in st.session_state:
+st.markdown(
+"""
+<div class="chat-title">
 
-    st.session_state.messages = []
+🤖 Ask Climate AI Assistant
 
+</div>
 
+<br>
 
-# Show previous messages
-
-for message in st.session_state.messages:
-
-    with st.chat_message(message["role"]):
-
-        st.write(message["content"])
-
-
-
-# ================= CHAT BAR =================
+""",
+unsafe_allow_html=True
+)
 
 
-question = st.chat_input(
-"💬 Ask about flood, tsunami, cyclone or climate change..."
+
+# Visible Chat Bar
+
+question = st.text_input(
+    "",
+    placeholder="💬 Example: What should people do during floods?"
 )
 
 
@@ -258,34 +282,29 @@ if question:
 
     # User message
 
-    st.session_state.messages.append(
-        {
-            "role":"user",
-            "content":question
-        }
-    )
-
-
     with st.chat_message("user"):
 
         st.write(question)
 
 
 
-    # AI message
-
-
     with st.chat_message("assistant"):
 
 
-        with st.spinner("🤖 AI is searching..."):
+        with st.spinner("🌍 AI is thinking..."):
 
+
+            # Router Agent
 
             category = route_question(question)
 
 
+            # Retrieval Agent
+
             context = retrieve_information(question)
 
+
+            # LLM Agent
 
             answer = generate_answer(
                 question,
@@ -302,9 +321,6 @@ if question:
 
 
 
-    st.session_state.messages.append(
-        {
-            "role":"assistant",
-            "content":answer
-        }
-    )
+            with st.expander("📄 Retrieved Documents"):
+
+                st.write(context)

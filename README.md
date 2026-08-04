@@ -311,3 +311,21 @@ Location:
 ---
 
 These patterns allow the assistant to make decisions, retrieve knowledge, and generate context-aware responses.
+
+# Model Selection Strategy
+
+The system uses different models for different tasks based on latency, cost, context requirements, and reasoning ability.
+
+| Task | Model (Provider) | Cost | Latency | Context Window | Reason for Selection |
+|---|---|---|---|---|---|
+| Query Routing / Classification | Llama 3.1 8B (Groq) | Low cost | Very fast | Large enough for short queries | Simple classification tasks do not require heavy reasoning |
+| Final Answer Generation | Llama 3.3 70B Versatile (Groq) | Higher cost | Moderate | Large context support | Provides better reasoning and detailed disaster explanations |
+| Text Embedding / Retrieval | Sentence Transformer (HuggingFace) | Free | Fast | Optimized for embeddings | Efficient semantic search for disaster documents |
+
+## Model Selection Decision
+
+Groq models were selected because they provide fast inference with good reasoning performance.
+
+A smaller model is suitable for routing tasks because they require less computation, while a larger model is used for final response generation to improve answer quality.
+
+Sentence Transformer embeddings were selected because they provide effective semantic similarity search for the RAG pipeline.

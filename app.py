@@ -9,7 +9,7 @@ st.set_page_config(
 )
 
 
-# Modern UI CSS
+# ================= UI DESIGN =================
 
 st.markdown("""
 <style>
@@ -17,75 +17,67 @@ st.markdown("""
 .stApp {
 
 background: linear-gradient(
-    120deg,
-    #001f3f,
-    #0077b6,
-    #90e0ef
+135deg,
+#e0f7ff,
+#caf0f8,
+#ade8f4
 );
 
 }
 
 
-.block-container {
-
-padding-top:2rem;
-
-}
-
+/* Main Hero */
 
 .hero {
 
-background: rgba(255,255,255,0.15);
-
-backdrop-filter: blur(12px);
-
-border-radius:25px;
+background:white;
 
 padding:35px;
 
+border-radius:25px;
+
 text-align:center;
 
-color:white;
-
-box-shadow:0px 8px 30px rgba(0,0,0,0.3);
+box-shadow:0px 8px 25px rgba(0,0,0,0.12);
 
 }
 
 
 .hero h1 {
 
-font-size:48px;
+color:#0077b6;
+
+font-size:45px;
 
 }
-
 
 
 .hero p {
 
-font-size:22px;
+color:#023e8a;
+
+font-size:20px;
 
 }
 
 
 
+/* Disaster Cards */
+
+
 .card {
 
-background:rgba(255,255,255,0.18);
-
-backdrop-filter:blur(10px);
-
-border-radius:20px;
+background:white;
 
 padding:25px;
 
+border-radius:20px;
+
 text-align:center;
 
-color:white;
+height:150px;
 
-height:160px;
-
-box-shadow:
-0 8px 20px rgba(0,0,0,0.25);
+box-shadow:0px 5px 20px rgba(0,0,0,0.12);
 
 }
 
@@ -97,39 +89,36 @@ font-size:35px;
 }
 
 
+.card h3 {
 
-.chat-box {
-
-background:white;
-
-border-radius:20px;
-
-padding:20px;
+color:#0077b6;
 
 }
 
 
 
 </style>
-
 """, unsafe_allow_html=True)
 
 
 
-# Hero Section
+# ================= HEADER =================
+
 
 st.markdown(
 """
 <div class="hero">
 
-<h1>🌍 Climate & Disaster AI Assistant 🌊</h1>
+<h1>
+🌍 Climate & Disaster Awareness Assistant 🌊
+</h1>
 
 <p>
-Intelligent Agentic AI System for Climate Awareness
+AI Powered Disaster Safety Information System
 </p>
 
 <p>
-🌧 Flood | 🌊 Tsunami | 🌀 Cyclone | ☀️ Drought
+🌧 Flood | 🌊 Tsunami | 🌀 Cyclone | ☀️ Drought | 🌱 Climate Change
 </p>
 
 </div>
@@ -142,23 +131,23 @@ unsafe_allow_html=True
 
 
 
-# Cards
-
-a,b,c,d = st.columns(4)
+# ================= CARDS =================
 
 
+col1,col2,col3,col4 = st.columns(4)
 
-with a:
+
+with col1:
 
     st.markdown(
     """
     <div class="card">
 
-    <h2>🌧</h2>
+    <h2>🌧️</h2>
 
     <h3>Flood</h3>
 
-    Safety Actions
+    Safety Guidelines
 
     </div>
     """,
@@ -166,7 +155,7 @@ with a:
     )
 
 
-with b:
+with col2:
 
     st.markdown(
     """
@@ -176,7 +165,7 @@ with b:
 
     <h3>Tsunami</h3>
 
-    Emergency Guide
+    Emergency Actions
 
     </div>
     """,
@@ -184,7 +173,7 @@ with b:
     )
 
 
-with c:
+with col3:
 
     st.markdown(
     """
@@ -202,7 +191,7 @@ with c:
     )
 
 
-with d:
+with col4:
 
     st.markdown(
     """
@@ -224,7 +213,8 @@ st.write("")
 
 
 
-# Agents
+# ================= AGENTS =================
+
 
 sys.path.append("agents")
 
@@ -235,13 +225,16 @@ from llm_agent import generate_answer
 
 
 
-# Chat Memory
+# ================= CHAT MEMORY =================
+
 
 if "messages" not in st.session_state:
 
-    st.session_state.messages=[]
+    st.session_state.messages = []
 
 
+
+# Show previous messages
 
 for message in st.session_state.messages:
 
@@ -251,10 +244,11 @@ for message in st.session_state.messages:
 
 
 
-# Chat Input
+# ================= CHAT BAR =================
+
 
 question = st.chat_input(
-    "Ask your disaster related question..."
+"💬 Ask about flood, tsunami, cyclone or climate change..."
 )
 
 
@@ -262,10 +256,12 @@ question = st.chat_input(
 if question:
 
 
+    # User message
+
     st.session_state.messages.append(
         {
-        "role":"user",
-        "content":question
+            "role":"user",
+            "content":question
         }
     )
 
@@ -276,10 +272,13 @@ if question:
 
 
 
+    # AI message
+
+
     with st.chat_message("assistant"):
 
 
-        with st.spinner("🌍 Searching knowledge base..."):
+        with st.spinner("🤖 AI is searching..."):
 
 
             category = route_question(question)
@@ -305,7 +304,7 @@ if question:
 
     st.session_state.messages.append(
         {
-        "role":"assistant",
-        "content":answer
+            "role":"assistant",
+            "content":answer
         }
     )

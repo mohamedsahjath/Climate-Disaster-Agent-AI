@@ -1,53 +1,78 @@
 import streamlit as st
 import sys
+import base64
 
 
-# Page Configuration
+# Page Setup
 st.set_page_config(
-    page_title="Climate & Disaster Awareness Assistant",
+    page_title="Climate Disaster AI Assistant",
     page_icon="🌍",
-    layout="centered"
+    layout="wide"
 )
 
 
-# Custom UI Design
-st.markdown("""
-<style>
+# Background Image
 
-.stApp {
-    background-color: #e6f7ff;
-}
+def set_background(image_path):
 
-.main-title {
-    text-align: center;
-    color: #005b96;
-    font-size: 40px;
-    font-weight: bold;
-}
+    with open(image_path, "rb") as image:
+        encoded = base64.b64encode(image.read()).decode()
 
-.subtitle {
-    text-align: center;
-    color: #003f5c;
-    font-size: 20px;
-}
+    st.markdown(
+        f"""
+        <style>
 
-.info-card {
-    background-color: white;
-    padding: 20px;
-    border-radius: 15px;
-    margin-top: 20px;
-    box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
-}
+        .stApp {{
+            background-image:
+            linear-gradient(
+            rgba(220,245,255,0.88),
+            rgba(220,245,255,0.88)
+            ),
+            url("data:image/jpg;base64,{encoded}");
 
-</style>
-""", unsafe_allow_html=True)
+            background-size: cover;
+            background-position:center;
+        }}
+
+
+        .title {{
+            text-align:center;
+            color:#004c6d;
+            font-size:45px;
+            font-weight:bold;
+        }}
+
+
+        .subtitle {{
+            text-align:center;
+            color:#00334d;
+            font-size:20px;
+        }}
+
+
+        .card {{
+            background:rgba(255,255,255,0.75);
+            padding:20px;
+            border-radius:20px;
+            text-align:center;
+            box-shadow:0px 5px 15px #aaaaaa;
+        }}
+
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
+
+set_background("images/climate.jpg")
 
 
 
 # Header
+
 st.markdown(
 """
-<div class="main-title">
+<div class="title">
 🌍 Climate & Disaster Awareness Assistant 🌊
 </div>
 
@@ -55,42 +80,63 @@ st.markdown(
 🌧 Flood | 🌊 Tsunami | 🌀 Cyclone | ☀️ Drought | 🌱 Climate Change
 </div>
 
-<br>
 """,
 unsafe_allow_html=True
 )
 
 
 
-# Welcome Card
-st.markdown(
-"""
-<div class="info-card">
+# Disaster Cards
 
-<h3>🌎 Welcome</h3>
-
-<p>
-AI assistant that provides climate change and disaster awareness information.
-</p>
-
-<ul>
-<li>🌧 Flood safety guidelines</li>
-<li>🌊 Tsunami preparedness</li>
-<li>🌀 Cyclone awareness</li>
-<li>☀️ Drought information</li>
-<li>🌱 Climate change knowledge</li>
-</ul>
-
-</div>
-""",
-unsafe_allow_html=True
-)
+c1,c2,c3 = st.columns(3)
 
 
+with c1:
+    st.markdown(
+    """
+    <div class="card">
+    🌧️
+    <h3>Flood</h3>
+    Emergency safety guidance
+    </div>
+    """,
+    unsafe_allow_html=True
+    )
 
-# Connect Agents Folder
+
+with c2:
+    st.markdown(
+    """
+    <div class="card">
+    🌊
+    <h3>Tsunami</h3>
+    Coastal safety awareness
+    </div>
+    """,
+    unsafe_allow_html=True
+    )
+
+
+with c3:
+    st.markdown(
+    """
+    <div class="card">
+    🌀
+    <h3>Cyclone</h3>
+    Disaster preparedness
+    </div>
+    """,
+    unsafe_allow_html=True
+    )
+
+
+
+st.write("")
+
+
+# Agents connection
+
 sys.path.append("agents")
-
 
 from retrieval_agent import retrieve_information
 from router_agent import route_question
@@ -98,76 +144,83 @@ from llm_agent import generate_answer
 
 
 
-# User Question
+# Chat Memory
 
-st.write("")
+if "messages" not in st.session_state:
+    st.session_state.messages = []
 
-question = st.text_input(
-    "💬 Enter your question:"
+
+
+# Display old messages
+
+for message in st.session_state.messages:
+
+    with st.chat_message(message["role"]):
+
+        st.write(message["content"])
+
+
+
+# Chat Input Bar
+
+user_question = st.chat_input(
+    "Ask about climate change or disasters..."
 )
 
 
 
-if question:
+if user_question:
 
 
-    # Router Agent
+    # User message
 
-    category = route_question(question)
-
-
-    st.info(
-        f"🤖 Agent Category: {category}"
+    st.session_state.messages.append(
+        {
+            "role":"user",
+            "content":user_question
+        }
     )
 
 
-
-    # Retrieval Agent
-
-    context = retrieve_information(question)
+    with st.chat_message("user"):
+        st.write(user_question)
 
 
 
-    # LLM Agent
+    # AI response
 
-    answer = generate_answer(
-        question,
-        context
+    with st.chat_message("assistant"):
+
+
+        with st.spinner("🤖 AI is thinking..."):
+
+
+            category = route_question(user_question)
+
+
+            context = retrieve_information(
+                user_question
+            )
+
+
+            answer = generate_answer(
+                user_question,
+                context
+            )
+
+
+            st.info(
+                f"Agent Category: {category}"
+            )
+
+
+            st.write(answer)
+
+
+
+    st.session_state.messages.append(
+        {
+            "role":"assistant",
+            "content":answer
+        }
     )
-
-
-
-    # Answer
-
-    st.subheader("🤖 AI Answer")
-
-    st.write(answer)
-
-
-
-    # Documents
-
-    st.subheader("📄 Retrieved Information")
-
-
-    with st.expander("View Retrieved Documents"):
-
-        st.write(context)
-
-
-
-# Footer
-
-st.markdown(
-"""
-<br><br>
-
-<center>
-🌍 Climate Disaster AI Assistant  
-<br>
-Powered by RAG + Agentic AI + Groq
-</center>
-
-""",
-unsafe_allow_html=True
-)

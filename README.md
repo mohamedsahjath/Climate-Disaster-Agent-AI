@@ -263,3 +263,51 @@ This module handles the Retrieval-Augmented Generation pipeline.
 3. Generate embeddings using HuggingFace Sentence Transformers
 4. Store vectors in ChromaDB
 5. Retrieve relevant context for user queries
+
+# Agentic Design Patterns
+
+## 1. Router Pattern
+
+The Router Agent classifies user queries into different categories such as flood, cyclone, drought, landslide and climate-related questions.
+
+Location:
+- agents/router_agent.py
+
+---
+
+## 2. Orchestrator-Worker Pattern
+
+The system uses multiple agents working together.
+
+The Router Agent sends the classified request to the Retrieval Agent, and the Retrieval Agent provides relevant context to the LLM Agent.
+
+Flow:
+
+User Query
+↓
+Router Agent
+↓
+Retrieval Agent
+↓
+LLM Agent
+↓
+Final Answer
+
+Location:
+- agents/router_agent.py
+- agents/retrieval_agent.py
+- agents/llm_agent.py
+
+---
+
+## 3. Tool-Use / Retrieval Pattern
+
+The Retrieval Agent uses external tools such as ChromaDB vector search and HuggingFace embeddings to retrieve relevant disaster information.
+
+Location:
+- agents/retrieval_agent.py
+- rag/
+
+---
+
+These patterns allow the assistant to make decisions, retrieve knowledge, and generate context-aware responses.

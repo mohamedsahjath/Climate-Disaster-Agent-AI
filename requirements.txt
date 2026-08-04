@@ -7,3 +7,4 @@ pypdf
 chromadb
 sentence-transformers
 python-dotenv
+torchvision

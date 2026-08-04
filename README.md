@@ -45,6 +45,23 @@ Final Answer
 ---
 
 ## Agent Components
+## Agent Communication
+
+The system uses multiple agents that communicate with each other.
+
+Flow:
+
+User Query
+↓
+Router Agent
+↓
+Retrieval Agent
+↓
+LLM Agent
+↓
+Final Answer
+
+The Router Agent identifies the user request category and sends the information to the Retrieval Agent. The Retrieval Agent searches the ChromaDB knowledge base and provides relevant context to the LLM Agent. The LLM Agent generates the final response.
 
 ### 1. Router Agent
 
